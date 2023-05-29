@@ -23,8 +23,7 @@ module XLIFFer
     def parse(text)
       @xml = Nokogiri::XML(text)
 
-      @xml.remove_namespaces!
-      root = @xml.xpath('/xliff')
+      root = @xml.xpath('//*[local-name()="xliff"]')
       fail FormatError, 'Not a XLIFF file' unless root.any?
 
       @version = get_version(root)
@@ -37,7 +36,7 @@ module XLIFFer
     end
 
     def parse_files(root)
-      root.xpath('//file').map { |f| File.new(f) }
+      root.xpath('//*[local-name()="file"]').map { |f| File.new(f) }
     end
 
     def self.xml_element?(xml)

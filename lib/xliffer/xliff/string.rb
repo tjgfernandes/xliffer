@@ -16,13 +16,13 @@ module XLIFFer
       end
 
       def target=(val)
-        target = @xml.xpath('./target')
+        target = @xml.xpath('./*[local-name()="target"]')
         target.first.content = val
         @target = val
       end
 
       def source=(val)
-        source = @xml.xpath('./source')
+        source = @xml.xpath('./*[local-name()="source"]')
         source.first.content = val
         @source = val
       end
@@ -34,7 +34,7 @@ module XLIFFer
       end
 
       def find_source
-        sources = @xml.xpath('./source')
+        sources = @xml.xpath('./*[local-name()="source"]')
         error_message = 'Should have only one source tag'
         fail MultipleElement, error_message if sources.size > 1
 
@@ -44,7 +44,7 @@ module XLIFFer
       end
 
       def find_target
-        targets = @xml.xpath('./target')
+        targets = @xml.xpath('./*[local-name()="target"]')
 
         error_message = 'Should have only one target tag'
         fail MultipleElement, error_message if targets.size > 1
@@ -57,7 +57,7 @@ module XLIFFer
       end
 
       def find_note
-        notes = @xml.xpath('./note')
+        notes = @xml.xpath('./*[local-name()="note"]')
         error_message = 'Should have only one target tag'
         fail MultipleElement, error_message if notes.size > 1
         notes.first ? notes.first.text : ''
