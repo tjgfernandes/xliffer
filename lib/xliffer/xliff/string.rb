@@ -27,6 +27,14 @@ module XLIFFer
         @source = val
       end
 
+      def locked?
+        if (a = @xml.attribute('locked'))
+          a.value == "locked"
+        else
+          false
+        end
+      end
+
       private
 
       def trans_unit?(xml)
