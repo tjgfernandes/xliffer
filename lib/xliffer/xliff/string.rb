@@ -61,7 +61,7 @@ module XLIFFer
           targets << Nokogiri::XML::Node.new('target', @xml)
           @xml.add_child(targets.first)
         end
-        targets.first.text
+        targets.first.inner_html
       end
 
       def find_note
