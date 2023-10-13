@@ -48,7 +48,7 @@ module XLIFFer
 
         error_message = 'Should have one source tag'
         fail NoElement, error_message unless sources.size == 1
-        sources.first.text
+        sources.first.inner_html
       end
 
       def find_target
@@ -68,7 +68,7 @@ module XLIFFer
         notes = @xml.xpath('./*[local-name()="note"]')
         error_message = 'Should have only one target tag'
         fail MultipleElement, error_message if notes.size > 1
-        notes.first ? notes.first.text : ''
+        notes.first ? notes.first.inner_html : ''
       end
     end
   end
