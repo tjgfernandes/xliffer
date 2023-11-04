@@ -1,8 +1,6 @@
 unless RUBY_VERSION.match(/\A1\.8/)
-  require 'codeclimate-test-reporter'
-  require 'simplecov'
-  CodeClimate::TestReporter.start
-  SimpleCov.start
+ require 'simplecov'
+ SimpleCov.start
 end
 
 require 'equivalent-xml'

@@ -1,4 +1,4 @@
-require 'nokogiri'
+require 'oga'
 
 module XLIFFer
   class XLIFF
@@ -12,14 +12,14 @@ module XLIFFer
 
         @xml = xml
 
-        @original = @xml.attr('original')
-        @source_language = @xml.attr('source-language')
-        @target_language = @xml.attr('target-language')
+        @original = @xml.attr('original')&.value
+        @source_language = @xml.attr('source-language')&.value
+        @target_language = @xml.attr('target-language')&.value
         @strings = @xml.xpath('.//*[local-name()="trans-unit"]').map { |tu| String.new(tu) }
       end
 
       def [](id)
-        @strings.find { |s| s.id == id }
+        @strings.find { |s| s.id.value == id }
       end
 
       def []=(id, target)

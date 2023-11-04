@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'nokogiri', '~> 1.5.10'
+gem 'oga', '~> 3.4'
 gem 'equivalent-xml'
 
 group :test do

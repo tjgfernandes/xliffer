@@ -21,17 +21,16 @@ module XLIFFer
     private
 
     def parse(text)
-      @xml = Nokogiri::XML(text)
-
+      @xml = Oga.parse_xml(text)
       root = @xml.xpath('//*[local-name()="xliff"]')
       fail FormatError, 'Not a XLIFF file' unless root.any?
 
       @version = get_version(root)
-      @files = parse_files(root)
+      @files = parse_files(@xml)
     end
 
     def get_version(root)
-      version = root.attr('version')
+      version = root.attr('version').first
       version ? version.value : nil
     end
 
@@ -40,7 +39,7 @@ module XLIFFer
     end
 
     def self.xml_element?(xml)
-      xml.is_a? Nokogiri::XML::Element
+      xml.is_a? Oga::XML::Element
     end
   end
 end

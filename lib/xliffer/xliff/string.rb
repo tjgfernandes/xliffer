@@ -17,13 +17,13 @@ module XLIFFer
 
       def target=(val)
         target = @xml.xpath('./*[local-name()="target"]')
-        target.first.content = val
+        target.first.inner_text = val
         @target = val
       end
 
       def source=(val)
         source = @xml.xpath('./*[local-name()="source"]')
-        source.first.content = val
+        source.first.inner_text = val
         @source = val
       end
 
@@ -48,7 +48,7 @@ module XLIFFer
 
         error_message = 'Should have one source tag'
         fail NoElement, error_message unless sources.size == 1
-        sources.first.inner_html
+        sources.first.text
       end
 
       def find_target
@@ -58,17 +58,18 @@ module XLIFFer
         fail MultipleElement, error_message if targets.size > 1
 
         if targets.empty?
-          targets << Nokogiri::XML::Node.new('target', @xml)
-          @xml.add_child(targets.first)
+          new_target = Oga::XML::Element.new(name: 'target')
+          targets << new_target
+          @xml.children << new_target
         end
-        targets.first.inner_html
+        targets.first
       end
 
       def find_note
         notes = @xml.xpath('./*[local-name()="note"]')
         error_message = 'Should have only one target tag'
         fail MultipleElement, error_message if notes.size > 1
-        notes.first ? notes.first.inner_html : ''
+        notes.first ? notes.first.text : ''
       end
     end
   end

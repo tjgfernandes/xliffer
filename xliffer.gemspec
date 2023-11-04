@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.email       = 'fotanus@gmail.com'
   s.homepage    = 'http://github.com/fotanus/xliff'
 
-  s.add_dependency 'nokogiri', '~> 1.5'
+  s.add_dependency 'oga', '~> 3.4'
 
   s.add_development_dependency 'rspec', '~> 2'
   s.add_development_dependency 'simplecov', '~> 0.10'

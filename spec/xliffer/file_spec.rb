@@ -1,11 +1,11 @@
 require 'spec_helper'
-require 'nokogiri'
+require 'oga'
 
 module XLIFFer
   describe XLIFF::File do
     describe '#new' do
-      it 'is created with a nokogiri file node' do
-        file_node = Nokogiri::XML.parse('<file></file>').xpath('/file').first
+      it 'is created with a oga file node' do
+        file_node = Oga.parse_xml('<file></file>').xpath('/file').first
         expect(XLIFF::File.new(file_node)).to be
       end
 
@@ -14,7 +14,7 @@ module XLIFFer
       end
 
       it "can't be created with a node that is not a file node" do
-        xml = Nokogiri::XML.parse('<xliff><file></file></xliff>')
+        xml = Oga.parse_xml('<xliff><file></file></xliff>')
         file_node = xml.xpath('/xliff').first
         expect { XLIFF::File.new(file_node) }.to raise_error ArgumentError
       end
@@ -22,14 +22,14 @@ module XLIFFer
 
     describe '#original' do
       it 'is nil if not defined' do
-        xml = Nokogiri::XML.parse('<xliff><file></file></xliff>')
+        xml = Oga.parse_xml('<xliff><file></file></xliff>')
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).original).to be nil
       end
 
       it 'is the original attribute on file tag' do
         xml_text = '<xliff><file original="neat file.c"></file></xliff>'
-        xml = Nokogiri::XML.parse(xml_text)
+        xml = Oga.parse_xml(xml_text)
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).original).to eql('neat file.c')
       end
@@ -37,14 +37,14 @@ module XLIFFer
 
     describe '#source_language' do
       it 'is nil if not defined' do
-        xml = Nokogiri::XML.parse('<xliff><file></file></xliff>')
+        xml = Oga.parse_xml('<xliff><file></file></xliff>')
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).source_language).to be nil
       end
 
       it 'is the original attribute on file tag' do
         xml_text = '<xliff><file source-language="en"></file></xliff>'
-        xml = Nokogiri::XML.parse(xml_text)
+        xml = Oga.parse_xml(xml_text)
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).source_language).to eql('en')
       end
@@ -52,14 +52,14 @@ module XLIFFer
 
     describe '#target_language' do
       it 'is nil if not defined' do
-        xml = Nokogiri::XML.parse('<xliff><file></file></xliff>')
+        xml = Oga.parse_xml('<xliff><file></file></xliff>')
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).target_language).to be nil
       end
 
       it 'is the original attribute on file tag' do
         xml_text = '<xliff><file target-language="fr"></file></xliff>'
-        xml = Nokogiri::XML.parse(xml_text)
+        xml = Oga.parse_xml(xml_text)
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).target_language).to eql('fr')
       end
@@ -67,14 +67,14 @@ module XLIFFer
 
     describe 'attribute accessors' do
       let(:subject) do
-        xml = Nokogiri::XML.parse('<xliff><file></file></xliff>')
+        xml = Oga.parse_xml('<xliff><file></file></xliff>')
         XLIFF::File.new xml.xpath('//file').first
       end
 
       describe 'source_language=' do
         it 'changes the source language' do
           xml_text = '<xliff><file source-language="fr"></file></xliff>'
-          file_node = Nokogiri::XML.parse(xml_text).xpath('//file').first
+          file_node = Oga.parse_xml(xml_text).xpath('//file').first
           subject = XLIFF::File.new file_node
           subject.source_language = 'en'
           expect(subject.source_language).to eq('en')
@@ -89,7 +89,7 @@ module XLIFFer
       describe 'target_language=' do
         it 'changes the target language' do
           xml_text = '<xliff><file target-language="fr"></file></xliff>'
-          file_node = Nokogiri::XML.parse(xml_text).xpath('//file').first
+          file_node = Oga.parse_xml(xml_text).xpath('//file').first
           subject = XLIFF::File.new file_node
           subject.target_language = 'en'
           expect(subject.target_language).to eq('en')
@@ -122,12 +122,12 @@ module XLIFFer
       end
 
       let(:subject) do
-        XLIFF::File.new(Nokogiri::XML.parse(xml).xpath('//file').first)
+        XLIFF::File.new(Oga.parse_xml(xml).xpath('//file').first)
       end
 
       describe '[]' do
         it 'gets the string with this id' do
-          expect(subject['hello'].target).to eq('Bonjour le monde')
+          expect(subject['hello'].target.inner_text).to eq('Bonjour le monde')
         end
 
         it 'returns nil if no string found' do
@@ -158,26 +158,26 @@ module XLIFFer
         EOF
       end
       it 'is an array ' do
-        xml = Nokogiri::XML.parse('<xliff><file></file></xliff>')
+        xml = Oga.parse_xml('<xliff><file></file></xliff>')
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).strings).to be_kind_of(Array)
       end
 
       it 'can be empty' do
-        xml = Nokogiri::XML.parse('<xliff><file></file></xliff>')
+        xml = Oga.parse_xml('<xliff><file></file></xliff>')
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).strings).to be_empty
       end
 
       it 'should have a string' do
-        xml = Nokogiri::XML.parse("<xliff><file>#{trans_unit}</file></xliff>")
+        xml = Oga.parse_xml("<xliff><file>#{trans_unit}</file></xliff>")
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).strings.size).to eql(1)
       end
 
       it 'should have multiple strings' do
         xml_text = "<xliff><file>#{trans_unit * 10}</file></xliff>"
-        xml = Nokogiri::XML.parse(xml_text)
+        xml = Oga.parse_xml(xml_text)
         file_node = xml.xpath('//file').first
         expect(XLIFF::File.new(file_node).strings.size).to eql(10)
       end

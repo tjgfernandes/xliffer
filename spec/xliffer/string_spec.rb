@@ -13,7 +13,7 @@ module XLIFFer
     end
 
     let(:xml) do
-      Nokogiri::XML.parse(trans_unit)
+      Oga.parse_xml(trans_unit)
     end
 
     describe '#new' do
@@ -29,7 +29,7 @@ module XLIFFer
       end
 
       it "can't be created with a node that is not a file node" do
-        xml = Nokogiri::XML.parse('<xliff></xliff>')
+        xml = Oga.parse_xml('<xliff></xliff>')
         trans_unit_node = xml.xpath('/xliff').first
         expect {
           XLIFF::String.new(trans_unit_node)
@@ -38,7 +38,7 @@ module XLIFFer
 
       it 'have one source' do
         xml = '<trans-unit><target></target></trans-unit>'
-        trans_unit_node = Nokogiri::XML.parse(xml).xpath('//trans-unit').first
+        trans_unit_node = Oga.parse_xml(xml).xpath('//trans-unit').first
         expect { XLIFF::String.new(trans_unit_node) }.to raise_error NoElement
       end
 
@@ -46,7 +46,7 @@ module XLIFFer
         xml = '<trans-unit>'
         xml += "#{'<source></source>' * 2}<target></target>"
         xml += '</trans-unit>'
-        trans_unit_node = Nokogiri::XML.parse(xml).xpath('//trans-unit').first
+        trans_unit_node = Oga.parse_xml(xml).xpath('//trans-unit').first
         expect {
           XLIFF::String.new(trans_unit_node)
         }.to raise_error MultipleElement
@@ -56,7 +56,7 @@ module XLIFFer
         xml = '<trans-unit>'
         xml += "<source></source>#{'<target></target>' * 2}"
         xml += '</trans-unit>'
-        trans_unit_node = Nokogiri::XML.parse(xml).xpath('//trans-unit').first
+        trans_unit_node = Oga.parse_xml(xml).xpath('//trans-unit').first
         expect {
           XLIFF::String.new(trans_unit_node)
         }.to raise_error MultipleElement
@@ -66,7 +66,7 @@ module XLIFFer
     describe '#id' do
       it 'is nil if not defined' do
         xml = '<trans-unit><source></source><target></target></trans-unit>'
-        trans_unit_node = Nokogiri::XML.parse(xml).xpath('//trans-unit').first
+        trans_unit_node = Oga.parse_xml(xml).xpath('//trans-unit').first
         expect(XLIFF::String.new(trans_unit_node).id).to be nil
       end
 
@@ -74,8 +74,8 @@ module XLIFFer
         xml = "<trans-unit id='my id'>"
         xml += '<source></source><target></target>'
         xml += '</trans-unit>'
-        trans_unit_node = Nokogiri::XML.parse(xml).xpath('//trans-unit').first
-        expect(XLIFF::String.new(trans_unit_node).id).to eql('my id')
+        trans_unit_node = Oga.parse_xml(xml).xpath('//trans-unit').first
+        expect(XLIFF::String.new(trans_unit_node).id.value).to eql('my id')
       end
     end
 
@@ -90,7 +90,7 @@ module XLIFFer
       context 'when target do not exist' do
         it 'add a new target' do
           xml = "<trans-unit id='my id'><source>Value</source></trans-unit>"
-          trans_unit_node = Nokogiri::XML.parse(xml).xpath('//trans-unit').first
+          trans_unit_node = Oga.parse_xml(xml).xpath('//trans-unit').first
           string = XLIFF::String.new(trans_unit_node)
           string.target = 'Hola Mundo'
           expect(string.target).to eq 'Hola Mundo'
