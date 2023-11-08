@@ -48,7 +48,7 @@ module XLIFFer
 
         error_message = 'Should have one source tag'
         fail NoElement, error_message unless sources.size == 1
-        sources.first.text
+        sources.first
       end
 
       def find_target
