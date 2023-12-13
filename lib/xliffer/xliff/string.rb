@@ -28,7 +28,7 @@ module XLIFFer
       end
 
       def locked?
-        if (a = @xml.attribute('locked'))
+        if (a = @xml.attribute('locked') || @xml.attribute('mq:locked'))
           a.value == "locked"
         else
           false
