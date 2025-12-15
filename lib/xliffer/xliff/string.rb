@@ -35,6 +35,22 @@ module XLIFFer
         end
       end
 
+      def status
+        if (a = @xml.attribute('status') || @xml.attribute('mq:status'))
+          a.value
+        else
+          nil
+        end
+      end
+
+      def percent
+        if (a = @xml.attribute('percent') || @xml.attribute('mq:percent'))
+          a.value.to_i
+        else
+          nil
+        end
+      end
+
       private
 
       def trans_unit?(xml)
